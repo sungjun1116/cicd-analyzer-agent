@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: cicd-analyzer-agent
+  config:
+    import: optional:file:.env[.properties]
+  ai:
+    retry:
+      max-attempts: ${AI_RETRY_MAX_ATTEMPTS:1}
+      backoff:
+        initial-interval: ${AI_RETRY_BACKOFF_INITIAL_INTERVAL:500ms}
+        max-interval: ${AI_RETRY_BACKOFF_MAX_INTERVAL:2s}
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: ${AI_MODEL:qwen3.5:4b}
+          temperature: 0.2
+
+server:
+  port: ${SERVER_PORT:8000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+build-analyzer:
+  analyzer:
+    secondary-strategy: ${ANALYZER_SECONDARY_STRATEGY:spring-ai}
+    max-log-chars: ${ANALYZER_MAX_LOG_CHARS:8000}
+    llm-connect-timeout-seconds: ${ANALYZER_LLM_CONNECT_TIMEOUT_SECONDS:5}
+    llm-timeout-seconds: ${ANALYZER_LLM_TIMEOUT_SECONDS:90}
+    llm-keep-alive: ${ANALYZER_LLM_KEEP_ALIVE:30m}
+    llm-num-predict: ${ANALYZER_LLM_NUM_PREDICT:512}
+    llm-payload-logging-enabled: ${ANALYZER_LLM_PAYLOAD_LOGGING_ENABLED:true}
+    llm-payload-log-max-chars: ${ANALYZER_LLM_PAYLOAD_LOG_MAX_CHARS:8000}
+    native-structured-output: false
+    enable-rag: true
+    enable-memory: true
+    enable-tools: true
+  jenkins:
+    url: ${JENKINS_URL:}
+    user: ${JENKINS_USER:}
+    token: ${JENKINS_TOKEN:}
+    log-max-size: ${JENKINS_LOG_MAX_SIZE:100000}
+    timeout-seconds: ${JENKINS_TIMEOUT_SECONDS:30}
+  mattermost:
+    url: ${MATTERMOST_URL:}
+    token: ${MATTERMOST_TOKEN:}
+    channel-id: ${MATTERMOST_CHANNEL_ID:}
+    default-channel-id: ${MATTERMOST_DEFAULT_CHANNEL_ID:}
+    default-channel: ${MATTERMOST_DEFAULT_CHANNEL:build-alerts}
+    timeout-seconds: ${MATTERMOST_TIMEOUT_SECONDS:10}
+    channel-routing:
+      - patterns: [SMT, mobile]
+        channel-id: h3gx9tm4migetx7tccyon4g7qy
+      - patterns: [HOM, homepage]
+        channel-id: hbe3kj44g7gw3drsa73en5e51y
