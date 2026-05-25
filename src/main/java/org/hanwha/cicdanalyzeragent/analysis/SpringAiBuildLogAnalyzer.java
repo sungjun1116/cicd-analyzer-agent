@@ -8,7 +8,6 @@ import org.hanwha.cicdanalyzeragent.ai.BuildAnalysisPromptService;
 import org.hanwha.cicdanalyzeragent.config.AnalyzerProperties;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
-import org.springframework.ai.ollama.api.ThinkOption;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
@@ -93,7 +92,6 @@ public class SpringAiBuildLogAnalyzer implements BuildLogAnalyzer {
 
     private OllamaChatOptions ollamaOptions() {
         OllamaChatOptions.Builder builder = OllamaChatOptions.builder()
-                .thinkOption(ThinkOption.ThinkBoolean.DISABLED)
                 .format("json");
 
         if (analyzerProperties.getLlmKeepAlive() != null && !analyzerProperties.getLlmKeepAlive().isBlank()) {
